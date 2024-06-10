@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Validated Login and Signup Forms</title>
+    <link rel="stylesheet" href="">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            background-image: url('https://th.bing.com/th/id/OIG4.KKuOgl6QbVTV_FHMjnjP?pid=ImgGn');
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: center;
+            height: 100vh;
+            display: flex;
+            align-items: center; 
+            justify-content: center; 
+            font-family: sans-serif;
+        }
+        .container {
+            display: flex;
+            justify-content: space-between;
+            width: 80%;
+            max-width: 1200px;
+            background-color: rgba(255, 255, 255, 0.0); /* Slightly transparent background */
+            padding: 20px;
+            border-radius: 10px;
+        }
+        .center {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 45%;
+        }
+        .header {
+            text-align: center;
+            margin: 20px;
+            color: rgb(255, 3, 3);
+            background-color: rgba(255, 255, 255, 0.8);
+        }
+        form {
+            width: 100%;
+            padding: 20px;
+            border: 2px solid purple;
+            border-radius: 10px;
+            background-color: rgb(251, 233, 206);
+            font-weight: bold;
+            color: purple;
+        }
+        form .font { 
+            font-size: 25px;
+        }
+        form input {
+            height: 40px; 
+            width: 100%;
+            padding: 0 10px;
+            font-size: 18px;
+            border: 2px solid rgb(228, 7, 232);
+        }
+        form .font2 {
+            margin-top: 30px;
+        }
+        form button {
+            background-color: purple; 
+            color: white;
+            margin: 40px 0 30px; 
+            height: 45px; 
+            border-radius: 10px;
+            width: 100%; 
+            font-size: 20px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        form button:hover { 
+            background: plum;
+            color: rgb(128, 0, 117);
+        }
+        form #email_error, form #pass_error {
+            border: 2px solid #EF9A9A; 
+            background: rgba(250, 0, 0, 0.1); 
+            text-align: center;
+            font-size: medium;
+            padding: 5px 8px;
+            display: none;
+        }
+    </style>
+    <script>
+        function validateLogin() {
+            var email = document.forms["login_form"]["email"].value;
+            var password = document.forms["login_form"]["password"].value;
+            var email_error = document.getElementById("email_error");
+            var pass_error = document.getElementById("pass_error");
+
+            email_error.style.display = "none";
+            pass_error.style.display = "none";
+
+            if (email == "") {
+                email_error.style.display = "block";
+                return false;
+            }
+            if (password == "") {
+                pass_error.style.display = "block";
+                return false;
+            }
+            return true;
+        }
+
+        function validateSignup() {
+            var email = document.forms["signup_form"]["email"].value;
+            var password = document.forms["signup_form"]["password"].value;
+            var name = document.forms["signup_form"]["name"].value;
+            var age = document.forms["signup_form"]["age"].value;
+            var r_pwd = document.forms["signup_form"]["r_pwd"].value;
+            var email_error = document.getElementById("email_error");
+            var pass_error = document.getElementById("pass_error");
+
+            email_error.style.display = "none";
+            pass_error.style.display = "none";
+
+            if (email == "" || password == "" || name == "" || age == "" || r_pwd == "") {
+                email_error.style.display = "block";
+                return false;
+            }
+            if (password != r_pwd) {
+                pass_error.style.display = "block";
+                return false;
+            }
+            return true;
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <div class="center">
+            <h1 class="header"> USER LOGIN FORM </h1>
+            <form class="form" method="post" name="login_form" action="/login_s" onsubmit="return validateLogin()">
+                <div class="font">Email or Phone Number</div><br>
+                <input type="text" name="email"><br>
+                <div id="email_error">Please fill up your Email or Phone</div>
+
+                <div class="font font2">Password</div><br>
+                <input type="password" name="password"><br>
+                <div id="pass_error">Please fill up your Password</div>
+
+                <button type="submit">Login</button>
+            </form>
+        </div>
+        <div class="center">
+            <h1 class="header">USER SIGNUP FORM</h1>
+            <form class="form" method="post" name="signup_form" action="/signup_s" onsubmit="return validateSignup()">
+                <div class="font">Email or Phone Number</div><br>
+                <input type="text" name="email" ><br>
+                <div id="email_error">Please fill up your Email or Phone</div><br>
+
+                <div class="font">Name</div><br>
+                <input type="text" name="name"><br>
+                <div class="font font2">Age</div><br>
+                <input type="text" name="age"><br>
+                <div class="font font2">Password</div><br>
+                <input type="password" name="password"><br>
+                <div class="font font2">Re-Enter Password</div><br>
+                <input type="password" name="r_pwd"><br>
+                
+                <div id="pass_error">Please fill up your Password</div>
+                <button type="submit">Signup</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

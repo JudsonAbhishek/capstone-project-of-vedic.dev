@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spoonacular API Example</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-image: url('https://th.bing.com/th/id/OIG4.Q5uIN6.UpHDmFS3xzkyZ?pid=ImgGn');
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: center;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+            
+        }
+        h1 {
+            color: #f50733;
+            background-color: rgba(16, 125, 197, 0.6);
+            text-align: center;
+        }
+        form {
+            margin-bottom: 20px;
+        }
+        label {
+            font-weight: bold;
+        }
+        input[type="text"] {
+            width: 300px;
+            padding: 8px;
+            margin-right: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            padding: 8px 16px;
+            border: none;
+            background-color: #007bff;
+            color: white;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: large;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        #results {
+            margin-top: 20px;
+            background-color: rgba(255, 255, 255, 0.6);
+            font-weight: bold;
+            
+        }
+        .recipe-info, .nutrition-info {
+            margin-top: 20px;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            background-color: rgba(255, 255, 255, 0.8); /* Semi-transparent background */
+            
+        }
+        .recipe-info h2, .nutrition-info h2 {
+            margin-top: 0;
+        }
+        .recipe-details, .nutrition-details {
+            margin-top: 10px;
+        }
+        .recipe {
+            padding: 10px;
+            border-bottom: 1px solid #ccc;
+        }
+        .recipe:last-child {
+            border-bottom: none;
+        }
+        .recipe button {
+            margin-left: 10px;
+            background-color: #28a745;
+        }
+        .recipe button:hover {
+            background-color: #218838;
+        }
+
+        label {
+            font-weight: bold;
+            background-color: rgba(184, 184, 185, 0.8);
+        }
+    </style>
+</head>
+<body>
+    <h1>Spoonacular Recipe Search</h1>
+    <form id="search-form">
+        <label for="query">Search For Recipes Here:</label>
+        <input type="text" id="query" name="query" required>
+        <button type="submit">Search</button>
+    </form>
+    <div id="results"></div>
+    <div class="recipe-info" id="recipe-info" style="display: none;">
+        <h2>Recipe Information</h2>
+        <div id="recipe-details" class="recipe-details"></div>
+    </div>
+    <div class="nutrition-info" id="nutrition-info" style="display: none;">
+        <h2>Nutritional Information</h2>
+        <div id="nutrition-details" class="nutrition-details"></div>
+    </div>
+
+    <script>
+        const API_KEY = '53e36ba60bc64d8982d0a176098bc544';
+        const BASE_URL = 'https://api.spoonacular.com/';
+
+        document.getElementById('search-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const query = document.getElementById('query').value;
+            searchRecipes(query);
+        });
+
+        function searchRecipes(query) {
+            const endpoint = `${BASE_URL}recipes/complexSearch?query=${query}&apiKey=${API_KEY}`;
+            fetch(endpoint)
+                .then(response => response.json())
+                .then(data => {
+                    displaySearchResults(data.results);
+                })
+                .catch(error => console.error('Error:', error));
+        }
+
+        function displaySearchResults(results) {
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML = '<h2>Search Results:</h2>';
+            results.forEach(result => {
+                const recipeDiv = document.createElement('div');
+                recipeDiv.classList.add('recipe');
+                recipeDiv.innerHTML = `<p>${result.title} <button onclick="getRecipeInformation(${result.id})">Details</button></p>`;
+                resultsDiv.appendChild(recipeDiv);
+            });
+        }
+
+        function getRecipeInformation(recipeId) {
+            const endpoint = `${BASE_URL}recipes/${recipeId}/information?apiKey=${API_KEY}`;
+            fetch(endpoint)
+                .then(response => response.json())
+                .then(data => {
+                    displayRecipeInformation(data);
+                })
+                .catch(error => console.error('Error:', error));
+        }
+
+        function displayRecipeInformation(data) {
+            const recipeInfoDiv = document.getElementById('recipe-info');
+            recipeInfoDiv.style.display = 'block';
+            const recipeDetailsDiv = document.getElementById('recipe-details');
+            recipeDetailsDiv.innerHTML = `<h3>${data.title}</h3><p>${data.instructions}</p>`;
+            getNutritionalInformation(data.id);
+        }
+
+        function getNutritionalInformation(recipeId) {
+            const endpoint = `${BASE_URL}recipes/${recipeId}/nutritionWidget.json?apiKey=${API_KEY}`;
+            fetch(endpoint)
+                .then(response => response.json())
+                .then(data => {
+                    displayNutritionalInformation(data);
+                })
+                .catch(error => console.error('Error:', error));
+        }
+
+        function displayNutritionalInformation(data) {
+            const nutritionInfoDiv = document.getElementById('nutrition-info');
+            nutritionInfoDiv.style.display = 'block';
+            const nutritionDetailsDiv = document.getElementById('nutrition-details');
+            nutritionDetailsDiv.innerHTML = `<p>Calories: ${data.calories}</p><p>Carbs: ${data.carbs}</p><p>Fat: ${data.fat}</p><p>Protein: ${data.protein}</p>`;
+        }
+    </script>
+</body>
+</html>
